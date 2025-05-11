@@ -181,31 +181,32 @@ print(f"Percentage of test data within tolerance interval: {coverage_percentage:
 # =====================================================================
 # Hypothesis testing
 # =====================================================================
-treatment_group = df[df['treatment'] == 'Yes']['age']
-no_treatment_group = df[df['treatment'] == 'No']['age']
+treatment_group = df.loc[df['treatment'] == 'Yes', 'age'].dropna()
+no_treatment_group = df.loc[df['treatment'] == 'No', 'age'].dropna()
 
-# Perform manual t-test
+# Perform t-test
 manual_t_stat, manual_p_value, manual_df = manual_ttest(
-    treatment_group, 
+    treatment_group,
     no_treatment_group,
-    alternative='less'
+    alternative='two-sided'
 )
 
 print("\nMANUAL HYPOTHESIS TESTING:")
-print("H0: Mean age of treatment seekers ≥ Mean age of non-seekers")
-print("H1: Mean age of treatment seekers < Mean age of non-seekers")
+print("H0: Mean age of treatment seekers = Mean age of non-seekers")
+print("H1: Mean age of treatment seekers ≠ Mean age of non-seekers")
 print(f"n of Treatment group: {len(treatment_group)}")
 print(f"n of Non-treatment group: {len(no_treatment_group)}")
 print(f"Mean age - Treatment group: {treatment_group.mean():.2f}")
 print(f"Mean age - Non-treatment group: {no_treatment_group.mean():.2f}")
-print(f"Variance of age - Treatment group: {treatment_group.var():.2f}")
-print(f"Variance of age - Non-treatment group: {no_treatment_group.var():.2f}")
+print(f"Variance - Treatment group: {treatment_group.var():.2f}")
+print(f"Variance - Non-treatment group: {no_treatment_group.var():.2f}")
 print(f"Manual t-statistic: {manual_t_stat:.2f}, p-value: {manual_p_value:.4f}")
 
-if manual_p_value < 0.05:
-    print("Conclusion: Reject H0 - Significant evidence that treatment seekers are younger")
+alpha = 0.05
+if manual_p_value < alpha:
+    print("Conclusion: Reject H0 - Significant age difference between groups")
 else:
-    print("Conclusion: Fail to reject H0 - No significant evidence of age difference")
+    print("Conclusion: Fail to reject H0 - No significant age difference between groups")
 
 # =====================================================================
 # VISUALIZATIONS
